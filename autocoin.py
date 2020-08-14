@@ -29,8 +29,6 @@ def post(url_path='', url_query='', payload={}, content_type=''):
 
     payload_string = urlencode(payload)
 
-# '' (empty string) in message represents any query parameters or
-# an empty string in case there are none
     message = 'BITSTAMP ' + api_key + \
         'POST' + \
         'www.bitstamp.net' + \
@@ -59,6 +57,7 @@ def post(url_path='', url_query='', payload={}, content_type=''):
         data=payload_string
         )
     if not r.status_code == 200:
+        print(r)
         raise Exception('Status code not 200')
 
     string_to_sign = (nonce + timestamp + r.headers.get('Content-Type'))
@@ -85,12 +84,42 @@ def get_balance():
     return r_dict
 
 
-def buy_btc():
-    pass
+def buy_btc(eur_balance):
+    url_path = '/api/v2/buy/instant/btceur/'
+    url_query = ''
+    payload = {'amount': str(eur_balance)}
+    content_type = 'application/x-www-form-urlencoded'
+    r = post(url_path=url_path,
+             url_query=url_query,
+             payload=payload,
+             content_type=content_type)
+    r_dict = r.json()
+    return r_dict
 
 
-def withdraw_btc(address):
-    pass
+def withdraw_btc(btc_balance, address):
+    with open('secrets.json') as secrets_file:
+        secrets = json.load(secrets_file)
+
+    nonce = str(time.time())
+    client_id = secrets['client_id']
+    api_key = secrets['api_key']
+    API_SECRET = secrets['api_key_secret']
+    message = nonce + client_id + api_key
+    signature = hmac.new(
+        API_SECRET.encode('utf-8'),
+        msg=message.encode('utf-8'),
+        digestmod=hashlib.sha256).hexdigest().upper()
+    url = 'https://bitstamp.net/api/bitcoin_withdrawal/'
+    payload = {'key': api_key,
+               'signature': signature,
+               'nonce': nonce,
+               'amount': btc_balance,
+               'address': address}
+    r = requests.post(url, data=payload)
+    print(r)
+    r_dict = r.json()
+    return r_dict
 
 
 while __name__ == "__main__":
@@ -106,10 +135,10 @@ while __name__ == "__main__":
         btc_balance = balance['btc_available']
         btc_balance = float(btc_balance)
 
-        if eur_balance > 50:
-            buy_btc()
+        if eur_balance > 25:
+            buy_btc(eur_balance)
         if btc_balance > 0:
             address = get_address()
-            withdraw_btc(address)
+            withdraw_btc(btc_balance, address)
 
     time.sleep(10)
