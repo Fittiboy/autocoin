@@ -101,11 +101,11 @@ def withdraw_btc(btc_balance, address):
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
 
-    nonce = str(time.time())
+    nonce = int(time.time())
     client_id = secrets['client_id']
     api_key = secrets['api_key']
     API_SECRET = secrets['api_key_secret']
-    message = nonce + client_id + api_key
+    message = str(nonce) + client_id + api_key
     signature = hmac.new(
         API_SECRET.encode('utf-8'),
         msg=message.encode('utf-8'),
@@ -117,7 +117,6 @@ def withdraw_btc(btc_balance, address):
                'amount': btc_balance,
                'address': address}
     r = requests.post(url, data=payload)
-    print(r)
     r_dict = r.json()
     return r_dict
 
