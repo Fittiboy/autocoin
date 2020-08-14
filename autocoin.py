@@ -110,7 +110,7 @@ def withdraw_btc(btc_balance, address):
         API_SECRET.encode('utf-8'),
         msg=message.encode('utf-8'),
         digestmod=hashlib.sha256).hexdigest().upper()
-    url = 'https://bitstamp.net/api/bitcoin_withdrawal/'
+    url = 'https://www.bitstamp.net/api/bitcoin_withdrawal/'
     payload = {'key': api_key,
                'signature': signature,
                'nonce': nonce,
