@@ -5,7 +5,6 @@ import requests
 import uuid
 import sys
 import json
-import address
 
 
 def post(url_path='', url_query='', payload={}, content_type=''):
@@ -143,7 +142,8 @@ while __name__ == "__main__":
             choice = None
         if btc_balance > 0.002:
             choice = None
-            address = address.address
+            with open("address.json") as address_file:
+                address = json.load(address_file)
             amount = round(btc_balance - 0.0005, 8)
             while choice not in options:
                 choice = input(f"Witdraw {amount} BTC to {address}? (y/n) ")
