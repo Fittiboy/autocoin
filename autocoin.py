@@ -5,10 +5,7 @@ import requests
 import uuid
 import sys
 import json
-
-
-def get_address():
-    return "0"
+from address import address
 
 
 def post(url_path='', url_query='', payload={}, content_type=''):
@@ -137,7 +134,6 @@ while __name__ == "__main__":
         if eur_balance > 25:
             buy_btc(eur_balance)
         if btc_balance > 0:
-            address = get_address()
             withdraw_btc(btc_balance, address)
 
     time.sleep(10)
