@@ -133,7 +133,7 @@ while __name__ == "__main__":
 
         if eur_balance > 25:
             buy_btc(eur_balance)
-        if btc_balance > 0:
+        if btc_balance > 0.002:
             withdraw_btc(btc_balance, address)
 
     time.sleep(10)
