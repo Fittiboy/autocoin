@@ -119,36 +119,40 @@ def withdraw_btc(btc_balance, address):
 
 
 while __name__ == "__main__":
-    balance = get_balance()
-    eur_balance = balance['eur_available']
-    eur_balance = float(eur_balance)
+    try:
+        balance = get_balance()
+        eur_balance = balance['eur_available']
+        eur_balance = float(eur_balance)
 
-    btc_balance = balance['btc_available']
-    btc_balance = float(btc_balance)
+        btc_balance = balance['btc_available']
+        btc_balance = float(btc_balance)
 
-    print("\n Updating...\n")
-    print("Funds available:")
-    print(f"\tBTC\t{btc_balance}BTC")
-    print(f"\tEUR\t{eur_balance}€\n")
+        print("\n Updating...\n")
+        print("Funds available:")
+        print(f"\tBTC\t{btc_balance} BTC")
+        print(f"\tEUR\t{eur_balance} €\n")
 
-    options = ["y", "n"]
+        options = ["y", "n"]
 
-    if eur_balance > 25:
+        if eur_balance > 25:
+            choice = None
+            while choice not in options:
+                choice = input("Buy BTC with all available EUR? (y/n) ")
+            if choice == "y":
+                buy_btc(eur_balance)
+            choice = None
+        if btc_balance > 0.002:
+            choice = None
+            address = address.address
+            amount = round(btc_balance - 0.0005, 8)
+            while choice not in options:
+                choice = input(f"Witdraw {amount} BTC to {address}? (y/n) ")
+            if choice == "y":
+                r_dict = withdraw_btc(amount, address)
+                print(r_dict)
         choice = None
-        while choice not in options:
-            choice = input("Buy BTC with all available EUR? (y/n) ")
-        if choice == "y":
-            buy_btc(eur_balance)
-        choice = None
-    if btc_balance > 0.002:
-        choice = None
-        address = address.address
-        amount = round(btc_balance - 0.0005, 8)
-        while choice not in options:
-            choice = input(f"Witdraw {amount}BTC to address {address}? (y/n) ")
-        if choice == "y":
-            r_dict = withdraw_btc(amount, address)
-            print(r_dict)
-        choice = None
 
-    time.sleep(5)
+        time.sleep(5)
+    except KeyboardInterrupt:
+        print("\tShutting down...")
+        break
