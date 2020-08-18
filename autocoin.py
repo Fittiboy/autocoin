@@ -54,7 +54,8 @@ def post(url_path='', url_query='', payload={}, content_type=''):
         )
     if not r.status_code == 200:
         print(r)
-        raise Exception('Status code not 200')
+        print("Status code not 200")
+        time.sleep(10)
 
     string_to_sign = (nonce + timestamp + r.headers.get('Content-Type'))
     string_to_sign = string_to_sign.encode('utf-8') + r.content
