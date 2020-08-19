@@ -63,7 +63,8 @@ def post(url_path='', url_query='', payload={}, content_type=''):
                                msg=string_to_sign,
                                digestmod=hashlib.sha256).hexdigest()
     if not r.headers.get('X-Server-Auth-Signature') == signature_check:
-        raise Exception('Signatures do not match')
+        # raise Exception('Signatures do not match')
+        print("Signatures do not match")
 
     return r
 
