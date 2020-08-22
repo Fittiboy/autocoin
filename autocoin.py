@@ -7,6 +7,10 @@ import sys
 import json
 
 
+with open("fiat.json") as fiat_file:
+    fiat = json.load(fiat_file)
+
+
 def post(url_path='', url_query='', payload={}, content_type=''):
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
@@ -83,10 +87,10 @@ def get_balance():
     return r_dict
 
 
-def buy_btc(eur_balance):
+def buy_btc(fiat_balance):
     url_path = '/api/v2/buy/instant/btceur/'
     url_query = ''
-    payload = {'amount': str(eur_balance)}
+    payload = {'amount': str(fiat_balance)}
     content_type = 'application/x-www-form-urlencoded'
     r = post(url_path=url_path,
              url_query=url_query,
@@ -96,7 +100,7 @@ def buy_btc(eur_balance):
     return r_dict
 
 
-def withdraw_btc(btc_balance, address):
+def withdraw_btc(amount, address):
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
 
@@ -113,7 +117,7 @@ def withdraw_btc(btc_balance, address):
     payload = {'key': api_key,
                'signature': signature,
                'nonce': nonce,
-               'amount': btc_balance,
+               'amount': amount,
                'address': address}
     r = requests.post(url, data=payload)
     r_dict = r.json()
@@ -123,8 +127,8 @@ def withdraw_btc(btc_balance, address):
 while __name__ == "__main__":
     try:
         balance = get_balance()
-        eur_balance = balance['eur_available']
-        eur_balance = float(eur_balance)
+        fiat_balance = balance[f'{fiat.lower()}_available']
+        fiat_balance = float(fiat_balance)
 
         btc_balance = balance['btc_available']
         btc_balance = float(btc_balance)
@@ -132,16 +136,16 @@ while __name__ == "__main__":
         print("\n Updating...\n")
         print("Funds available:")
         print(f"\tBTC\t{btc_balance} BTC")
-        print(f"\tEUR\t{eur_balance} €\n")
+        print(f"\t{fiat}\t{fiat_balance} {fiat}\n")
 
         options = ["y", "n"]
 
-        if eur_balance > 25:
+        if fiat_balance > 25:
             choice = None
             while choice not in options:
-                choice = input("Buy BTC with all available EUR? (y/n) ")
+                choice = input("Buy BTC with all available {fiat}? (y/n) ")
             if choice == "y":
-                buy_btc(eur_balance)
+                buy_btc(fiat_balance)
             choice = None
         if btc_balance > 0.002:
             choice = None
