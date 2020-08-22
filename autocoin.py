@@ -56,6 +56,7 @@ def post(url_path='', url_query='', payload={}, content_type=''):
         print(r)
         print("Status code not 200")
         time.sleep(10)
+        raise Exception("Status code not 200")
 
     string_to_sign = (nonce + timestamp + r.headers.get('Content-Type'))
     string_to_sign = string_to_sign.encode('utf-8') + r.content
@@ -63,6 +64,7 @@ def post(url_path='', url_query='', payload={}, content_type=''):
                                msg=string_to_sign,
                                digestmod=hashlib.sha256).hexdigest()
     if not r.headers.get('X-Server-Auth-Signature') == signature_check:
+        print("Signatures do not match")
         raise Exception('Signatures do not match')
 
     return r
