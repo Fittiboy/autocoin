@@ -1,6 +1,7 @@
 import json
 
-if __name__ == "__main__":
+
+def main():
     address = input("New address: ")
     choice = None
     options = ["y", "n"]
@@ -9,3 +10,7 @@ if __name__ == "__main__":
     if choice == "y":
         with open("address.json", "w") as address_file:
             json.dump(address, address_file)
+
+
+if __name__ == "__main__":
+    main()

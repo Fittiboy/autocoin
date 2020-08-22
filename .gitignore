@@ -1,3 +1,4 @@
-secrets*
+secrets.json
 address.json
+fiat.json
 __pycache__
