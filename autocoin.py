@@ -135,10 +135,15 @@ while __name__ == "__main__":
 
         current_timestamp = time.time()
 
-        current_timestamp = time.time()
+        minutes, seconds = divmod(current_timestamp, 60)
+        hours, minutes = divmod(minutes, 60)
+        hours %= 24
+        hours_s = str(int(hours))
+        minutes_s = str(int(minutes))
+        seconds_s = str(int(seconds))
+        timestr = f"{hours_s}:{minutes_s}:{seconds_s}"
 
-        print("\n Updating...\n")
-        print(current_timestamp)
+        print(f"\n{timestr}\tUpdating...\n")
         print("Funds available:")
         print(f"\tBTC\t{btc_balance} BTC")
         print(f"\t{fiat}\t{fiat_balance} {fiat}\n")
