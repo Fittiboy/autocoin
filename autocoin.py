@@ -133,7 +133,12 @@ while __name__ == "__main__":
         btc_balance = balance['btc_available']
         btc_balance = float(btc_balance)
 
+        current_timestamp = time.time()
+
+        current_timestamp = time.time()
+
         print("\n Updating...\n")
+        print(current_timestamp)
         print("Funds available:")
         print(f"\tBTC\t{btc_balance} BTC")
         print(f"\t{fiat}\t{fiat_balance} {fiat}\n")
