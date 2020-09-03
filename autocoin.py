@@ -138,9 +138,9 @@ while __name__ == "__main__":
         minutes, seconds = divmod(current_timestamp, 60)
         hours, minutes = divmod(minutes, 60)
         hours %= 24
-        hours_s = str(int(hours))
-        minutes_s = str(int(minutes))
-        seconds_s = str(int(seconds))
+        hours_s = f"{int(hours):02d}"
+        minutes_s = f"{int(minutes):02d}"
+        seconds_s = f"{int(seconds):02d}"
         timestr = f"{hours_s}:{minutes_s}:{seconds_s}"
 
         print(f"\n{timestr}\tUpdating...\n")
