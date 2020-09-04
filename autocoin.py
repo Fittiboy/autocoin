@@ -179,5 +179,8 @@ while __name__ == "__main__":
     except KeyboardInterrupt:
         print("\tShutting down...")
         break
-    except Exception:
+    except Exception as e:
+        with open("error.log", "a") as logfile:
+            logfile.write(e)
+        print(e)
         continue
