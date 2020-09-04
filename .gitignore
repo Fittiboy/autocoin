@@ -1,5 +1,6 @@
 secrets.json
 address.json
+addresses.json
 fiat.json
 __pycache__
 *.un~

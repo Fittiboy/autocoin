@@ -5,6 +5,7 @@ import requests
 import uuid
 import sys
 import json
+import setadd
 
 
 with open("fiat.json") as fiat_file:
@@ -121,6 +122,11 @@ def withdraw_btc(amount, address):
                'address': address}
     r = requests.post(url, data=payload)
     r_dict = r.json()
+    with open('addresses.json') as addresses_file:
+        addresses = json.load(addresses_file)
+    setadd.setadd(addresses.pop(0))
+    with open('addresses.json', w) as addresses_file:
+        json.dump(addresses, addresses_file, indent=4)
     return r_dict
 
 
