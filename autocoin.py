@@ -125,7 +125,7 @@ def withdraw_btc(amount, address):
     with open('addresses.json') as addresses_file:
         addresses = json.load(addresses_file)
     setadd.setadd(addresses.pop(0))
-    with open('addresses.json', w) as addresses_file:
+    with open('addresses.json', "w") as addresses_file:
         json.dump(addresses, addresses_file, indent=4)
     return r_dict
 
