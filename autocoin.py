@@ -1,3 +1,5 @@
+"""Retreive available fiat/BTC every 5 seconds. Immediately convert fiat to BTC
+and send BTC to withdraw address once available"""
 import hashlib
 import hmac
 import time
@@ -8,11 +10,16 @@ import json
 import setadd
 
 
+# Set the fiat currency used by the script
 with open("fiat.json") as fiat_file:
     fiat = json.load(fiat_file)
 
 
 def post(url_path='', url_query='', payload={}, content_type=''):
+    """Make post requests to the Bitstamp API
+
+    For further explanation, consult the Bitstamp
+    API documentation at https://bitstamp.net/api"""
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
 
@@ -76,6 +83,7 @@ def post(url_path='', url_query='', payload={}, content_type=''):
 
 
 def get_balance():
+    """Ask Bitstamp to return available account balances"""
     url_path = '/api/v2/balance/'
     url_query = ''
     payload = {}
@@ -89,6 +97,7 @@ def get_balance():
 
 
 def buy_btc(fiat_balance):
+    """Make an instant order"""
     url_path = '/api/v2/buy/instant/btceur/'
     url_query = ''
     payload = {'amount': str(fiat_balance)}
@@ -102,6 +111,7 @@ def buy_btc(fiat_balance):
 
 
 def withdraw_btc(amount, address):
+    """Withdraw Bitcoin to address in address.json"""
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
 
