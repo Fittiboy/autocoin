@@ -191,7 +191,5 @@ while __name__ == "__main__":
         print("\tShutting down...")
         break
     except Exception as e:
-        with open("error.log", "a") as logfile:
-            logfile.write(e)
         print(e)
         continue
