@@ -185,7 +185,7 @@ while __name__ == "__main__":
                 print(r_dict)
         choice = None
 
-        time.sleep(5)
+        time.sleep(60)
     except KeyboardInterrupt:
         print("\tShutting down...")
         break
