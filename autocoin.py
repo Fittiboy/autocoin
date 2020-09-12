@@ -1,5 +1,7 @@
-"""Retreive available fiat/BTC every 5 seconds. Immediately convert fiat to BTC
-and send BTC to withdraw address once available"""
+"""Retreive available fiat/BTC balances every 5 seconds.  Immediately convert
+fiat to BTC and send BTC to withdraw address once available.
+Call with "reuse" flag to only withdraw to a single address given in
+address.json."""
 import hashlib
 import hmac
 import time
@@ -19,11 +21,11 @@ def post(url_path='', url_query='', payload={}, content_type=''):
     """Make post requests to the Bitstamp API
 
     For further explanation, consult the Bitstamp
-    API documentation at https://bitstamp.net/api"""
+    API documentation at https://bitstamp.net/api, as this
+    code is taken almost directly from their examples."""
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
 
-    # client_id = secrets['client_id']
     api_key = secrets['api_key']
     API_SECRET = str.encode(secrets['api_key_secret'])
 
@@ -96,7 +98,7 @@ def get_balance():
 
 
 def buy_btc(fiat_balance):
-    """Make an instant order"""
+    """Make an instant order and return API response."""
     url_path = '/api/v2/buy/instant/btceur/'
     url_query = ''
     payload = {'amount': str(fiat_balance)}
@@ -110,10 +112,15 @@ def buy_btc(fiat_balance):
 
 
 def withdraw_btc(amount, address):
-    """Withdraw Bitcoin to address in address.json"""
+    """Withdraw Bitcoin to address in address.json and return API response.
+
+    Default behavior also replaces the address present in address.json with the
+    first address from the list in addresses.json after withdrawing.
+    This can be overwritten by supplying the script with the "reuse" flag."""
     with open('secrets.json') as secrets_file:
         secrets = json.load(secrets_file)
 
+    # Withdrawing BTC is only possible via the old API
     nonce = int(time.time())
     client_id = secrets['client_id']
     api_key = secrets['api_key']
@@ -131,7 +138,7 @@ def withdraw_btc(amount, address):
                'address': address}
     r = requests.post(url, data=payload)
     r_dict = r.json()
-    if not sys.argv[1] == "reuse":
+    if not sys.argv[1] == "reuse":  # Allow withdrawing to single address
         with open('addresses.json') as addresses_file:
             addresses = json.load(addresses_file)
         setadd.setadd(addresses.pop(0))
@@ -144,11 +151,12 @@ while __name__ == "__main__":
     try:
         balance = get_balance()
         fiat_balance = balance[f'{fiat.lower()}_available']
-        fiat_balance = float(fiat_balance)
+        fiat_balance = float(fiat_balance)  # API call of returns as string
 
         btc_balance = balance['btc_available']
         btc_balance = float(btc_balance)
 
+        # Timestamp is printed to easily verify script is alive
         current_timestamp = time.time()
 
         minutes, seconds = divmod(current_timestamp, 60)
@@ -173,7 +181,8 @@ while __name__ == "__main__":
             if choice == "y":
                 buy_btc(fiat_balance)
             choice = None
-        if btc_balance > 0.002:
+        if btc_balance > 0.002:  # Don't withdraw too little, fees are high
+            # Be aware though, this minimum value represents 25% fees
             choice = None
             with open("address.json") as address_file:
                 address = json.load(address_file)
