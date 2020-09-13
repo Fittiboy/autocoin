@@ -12,6 +12,12 @@ import json
 import setadd
 
 
+# Prepare for manually setting minimums for buy orders and withdrawals
+withdraw_fee = 0.0005
+fiat_min = 25
+btc_min = 0.002
+
+
 # Set the fiat currency used by the script
 with open("fiat.json") as fiat_file:
     fiat = json.load(fiat_file)
@@ -174,19 +180,19 @@ while __name__ == "__main__":
 
         options = ["y", "n"]
 
-        if fiat_balance > 25:
+        if fiat_balance > fiat_min:
             choice = None
             while choice not in options:
                 choice = input("Buy BTC with all available {fiat}? (y/n) ")
             if choice == "y":
                 buy_btc(fiat_balance)
             choice = None
-        if btc_balance > 0.002:  # Don't withdraw too little, fees are high
+        if btc_balance > btc_min:  # Don't withdraw too little, fees are high
             # Be aware though, this minimum value represents 25% fees
             choice = None
             with open("address.json") as address_file:
                 address = json.load(address_file)
-            amount = round(btc_balance - 0.0005, 8)
+            amount = round(btc_balance - withdraw_fee, 8)
             while choice not in options:
                 choice = input(f"Witdraw {amount} BTC to {address}? (y/n) ")
             if choice == "y":
