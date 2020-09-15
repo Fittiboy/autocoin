@@ -12,10 +12,16 @@ import json
 import setadd
 
 
-# Prepare for manually setting minimums for buy orders and withdrawals
-withdraw_fee = 0.0005
-fiat_min = 25
-btc_min = 0.002
+# Load settings file for trading and withdrawal limits
+with open("limits.json") as limits_file:
+    limits = json.load(limits_file)
+
+# Bitstamp's Bitcoin withdrawal fee (check fee schedule)
+withdraw_fee = limits["withdraw_fee"]
+# Minimum amount of available fiat before buy order is placed
+fiat_min = limits["fiat_min"]
+# Minimum amount of available BTC before withdrawal initiates
+btc_min = limits["btc_min"]
 
 
 # Set the fiat currency used by the script
