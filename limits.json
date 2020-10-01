@@ -1,0 +1,5 @@
+{
+    "fiat_min": 25,
+    "btc_min": 0.002,
+    "withdraw_fee": 0.0005
+}
